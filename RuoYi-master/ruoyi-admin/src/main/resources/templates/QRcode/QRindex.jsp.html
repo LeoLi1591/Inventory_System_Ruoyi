@@ -1,0 +1,24 @@
+<html>
+    <head>
+        <title>生成二维码</title>
+    </head>
+
+    <body>
+    <h1>使用google zxing生成二维码：</h1>
+
+    <hr/>
+    请输入文本内容：<input type ="text" id="url"/> <button onclick="generateQRcode()">生成二维码</button>
+    <hr/>
+    <img id="qrcodeImg"/>
+
+    <script type="text/javascript">
+        function generateQRcode(){
+            let url = document.getElementById("url").value;
+
+            let qrcodeImg = document.getElementById("qrcodeImg");
+            qrcodeImg.src = "/myqrcode/generate?url=" + url;
+        }
+    </script>
+    </body>
+
+</html>

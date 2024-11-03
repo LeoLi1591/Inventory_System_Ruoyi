@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.storage.material.mapper.MaterialStorageMapper">
+    
+    <resultMap type="MaterialStorage" id="MaterialStorageResult">
+        <result property="materialId"    column="material_id"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="materialType"    column="material_type"    />
+        <result property="materialSpecifications"    column="material_specifications"    />
+        <result property="materialUnits"    column="material_units"    />
+        <result property="materialInTime"    column="material_in_time"    />
+        <result property="materialBarCode"    column="material_bar_code"    />
+        <result property="materialQrCode"    column="material_qr_code"    />
+    </resultMap>
+
+    <sql id="selectMaterialStorageVo">
+        select material_id, material_name, material_type, material_specifications, material_units, material_in_time, material_bar_code, material_qr_code from material_storage
+    </sql>
+
+    <select id="selectMaterialStorageList" parameterType="MaterialStorage" resultMap="MaterialStorageResult">
+        <include refid="selectMaterialStorageVo"/>
+        <where>  
+            <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
+            <if test="materialType != null "> and material_type = #{materialType}</if>
+            <if test="materialSpecifications != null  and materialSpecifications != ''"> and material_specifications = #{materialSpecifications}</if>
+            <if test="materialUnits != null  and materialUnits != ''"> and material_units = #{materialUnits}</if>
+            <if test="materialInTime != null "> and material_in_time = #{materialInTime}</if>
+            <if test="materialBarCode != null  and materialBarCode != ''"> and material_bar_code = #{materialBarCode}</if>
+            <if test="materialQrCode != null  and materialQrCode != ''"> and material_qr_code = #{materialQrCode}</if>
+        </where>
+    </select>
+    
+    <select id="selectMaterialStorageByMaterialId" parameterType="String" resultMap="MaterialStorageResult">
+        <include refid="selectMaterialStorageVo"/>
+        where material_id = #{materialId}
+    </select>
+
+    <insert id="insertMaterialStorage" parameterType="MaterialStorage">
+        insert into material_storage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="materialId != null">material_id,</if>
+            <if test="materialName != null and materialName != ''">material_name,</if>
+            <if test="materialType != null">material_type,</if>
+            <if test="materialSpecifications != null and materialSpecifications != ''">material_specifications,</if>
+            <if test="materialUnits != null and materialUnits != ''">material_units,</if>
+            <if test="materialInTime != null">material_in_time,</if>
+            <if test="materialBarCode != null and materialBarCode != ''">material_bar_code,</if>
+            <if test="materialQrCode != null and materialQrCode != ''">material_qr_code,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="materialId != null">#{materialId},</if>
+            <if test="materialName != null and materialName != ''">#{materialName},</if>
+            <if test="materialType != null">#{materialType},</if>
+            <if test="materialSpecifications != null and materialSpecifications != ''">#{materialSpecifications},</if>
+            <if test="materialUnits != null and materialUnits != ''">#{materialUnits},</if>
+            <if test="materialInTime != null">#{materialInTime},</if>
+            <if test="materialBarCode != null and materialBarCode != ''">#{materialBarCode},</if>
+            <if test="materialQrCode != null and materialQrCode != ''">#{materialQrCode},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMaterialStorage" parameterType="MaterialStorage">
+        update material_storage
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="materialName != null and materialName != ''">material_name = #{materialName},</if>
+            <if test="materialType != null">material_type = #{materialType},</if>
+            <if test="materialSpecifications != null and materialSpecifications != ''">material_specifications = #{materialSpecifications},</if>
+            <if test="materialUnits != null and materialUnits != ''">material_units = #{materialUnits},</if>
+            <if test="materialInTime != null">material_in_time = #{materialInTime},</if>
+            <if test="materialBarCode != null and materialBarCode != ''">material_bar_code = #{materialBarCode},</if>
+            <if test="materialQrCode != null and materialQrCode != ''">material_qr_code = #{materialQrCode},</if>
+        </trim>
+        where material_id = #{materialId}
+    </update>
+
+    <delete id="deleteMaterialStorageByMaterialId" parameterType="String">
+        delete from material_storage where material_id = #{materialId}
+    </delete>
+
+    <delete id="deleteMaterialStorageByMaterialIds" parameterType="String">
+        delete from material_storage where material_id in 
+        <foreach item="materialId" collection="array" open="(" separator="," close=")">
+            #{materialId}
+        </foreach>
+    </delete>
+
+</mapper>

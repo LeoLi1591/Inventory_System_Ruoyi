@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('物料仓库管理列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>名称：</label>
+                                <input type="text" name="materialName"/>
+                            </li>
+                            <li>
+                                <label>规格型号：</label>
+                                <input type="text" name="materialSpecifications"/>
+                            </li>
+                            <li>
+                                <label>单位：</label>
+                                <input type="text" name="materialUnits"/>
+                            </li>
+                            <li>
+                                <label>入库时间：</label>
+                                <input type="text" name="materialInTime"/>
+                            </li>
+                            <li>
+                                <label>条形码：</label>
+                                <input type="text" name="materialBarCode"/>
+                            </li>
+                            <li>
+                                <label>二维码：</label>
+                                <input type="text" name="materialQrCode"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="material:storage:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="material:storage:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="material:storage:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="material:storage:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('material:storage:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('material:storage:remove')}]];
+        var prefix = ctx + "material/storage";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "物料仓库管理",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'materialId',
+                    title: '物料编码',
+                    visible: false
+                },
+                {
+                    field: 'materialName',
+                    title: '名称'
+                },
+                {
+                    field: 'materialType',
+                    title: '种类'
+                },
+                {
+                    field: 'materialSpecifications',
+                    title: '规格型号'
+                },
+                {
+                    field: 'materialUnits',
+                    title: '单位'
+                },
+                {
+                    field: 'materialInTime',
+                    title: '入库时间'
+                },
+                {
+                    field: 'materialBarCode',
+                    title: '条形码'
+                },
+                {
+                    field: 'materialQrCode',
+                    title: '二维码'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.materialId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.materialId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>
